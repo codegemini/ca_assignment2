@@ -27,7 +27,7 @@ void usage(void){
 
 /* Block Structure */
 typedef struct _str_block {
-   string *cacheLine;  
+   string *cachedBytes;  
 } cacheBlock;
 
 void calculateCacheValues(int s, int b, int w){
@@ -154,10 +154,10 @@ int main(int argc, char *argv[]){
    for(int i=0;i<numSets;i++)
        blocks[i] = new cacheBlock[ways]; 
    
-   /*Initilialize each block's cache line*/
+   /*Initilialize each block's cache bytes*/
    for(int i=0;i<numSets;i++)
    	  for(int j=0;j<ways;j++)
-   	  	  blocks[i][j].cacheLine = new string [blockSize];
+   	  	  blocks[i][j].cachedBytes = new string [blockSize];
    
    /*Read the trace file*/
 
