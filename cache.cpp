@@ -2,7 +2,11 @@
 #include <cstdio>
 #include <unistd.h>
 #include <stdlib.h>
+#include <fstream>
+#include <string>
+#include <ostream>
 
+using namespace std;
 /* Usage */ 
 void usage(void){
    printf("Usage:\n");
@@ -12,17 +16,27 @@ void usage(void){
 }
 
 int main(int argc, char *argv[]){
-  int c = 0;	
+  int c = -2;	// Default value if no arguments are passed
   opterr = 0;
+  unsigned int cacheSize;
+  unsigned int blockSize;
+  unsigned int ways = 1; // Default number of ways
+  string filename;
 
-  while ((c = getopt (argc, argv, "s:b:f:")) != -1)
+  while ((c = getopt (argc, argv, "s:b:w:f:")) != -1)
     switch (c)
       {
       case 's':
+        cacheSize = atoi(optarg);
         break;
       case 'b':
+        blockSize = atoi(optarg);
+        break;
+      case 'w':
+        ways = atoi(optarg);
         break;
       case 'f':
+        filename = optarg;
         break;
       case '?':
         if (optopt == 's' || optopt == 'b'){
@@ -42,8 +56,17 @@ int main(int argc, char *argv[]){
       default:
         usage();
       }
-    if(c == -1){
+    if(c == -2){ // if no arguments are passed display usage
         usage();
+        return 1;
     }
+
+//Reading the trace file
+string address, instruct;
+ifstream infile(filename.c_str());
+
+while(infile >> address >> instruct){
+    
+}
 
 }
