@@ -7,6 +7,7 @@
 #include <ostream>
 
 using namespace std;
+
 /* Usage */ 
 void usage(void){
    printf("Usage:\n");
@@ -14,6 +15,11 @@ void usage(void){
    printf(" -b <size of the block in Bytes>\n");
    printf(" -f <trace file - containing memory accesses i.e. Loads and Stores>\n");
 }
+
+/* Block Structure */
+typedef struct _str_block {
+   string chacheLine[];  
+} cacheBlock;
 
 int main(int argc, char *argv[]){
   int c = -2;	// Default value if no arguments are passed
