@@ -2,11 +2,20 @@
 #include <cstdio>
 #include <unistd.h>
 #include <stdlib.h>
+#include <math.h> 
+#include <string>
 #include <fstream>
 #include <string>
 #include <ostream>
 
 using namespace std;
+
+
+const int ADDRESS_SIZE = 32;
+int numSets =0;
+int numIndexBits = 0;
+int numOffsetBits = 0;
+int numTagBits =0;
 
 /* Usage */ 
 void usage(void){
@@ -18,8 +27,64 @@ void usage(void){
 
 /* Block Structure */
 typedef struct _str_block {
-   string chacheLine[];  
+   string *cacheLine;  
 } cacheBlock;
+
+void calculateCacheValues(int s, int b, int w){
+    numSets= s/(b*w);
+    numIndexBits = log2(numSets);
+    numOffsetBits = log2(b);
+    numTagBits = ADDRESS_SIZE - (numIndexBits + numOffsetBits);
+
+}
+
+string hexToBinary(string hex){
+
+  string bin ;
+  for(int i=0;i<hex.length(); i++){
+      switch(hex[i]){
+        case '0': bin += "0000";  break;
+        case '1': bin += "0001";  break;
+        case '2': bin += "0010";  break; 
+        case '3': bin += "0011";  break;
+        case '4': bin += "0100";  break; 
+        case '5': bin += "0101";  break;
+        case '6': bin += "0110";  break;
+        case '7': bin += "0111";  break;
+        case '8': bin += "1000";  break;
+        case '9': bin += "1001";  break;
+        case 'a': bin += "1010";  break;
+        case 'b': bin += "1011";  break;
+        case 'c': bin += "1100";  break;
+        case 'd': bin += "1101";  break;
+        case 'e': bin += "1110";  break;
+        case 'f': bin += "1111";  break;
+        default : return "Invalid Address"; 
+        
+      }
+  }
+
+  return bin;
+
+}
+void splitAddress(string address, string &tag, int &offset, int &index ){
+
+
+
+}
+/* Helper Fucntions */
+bool fexists(const char *filename)
+{
+  ifstream ifile(filename);
+  if(ifile){
+  	ifile.close();
+    return true; 
+  }else{
+  	ifile.close();
+  	return false;
+  }
+}
+
 
 int main(int argc, char *argv[]){
   int c = -2;	// Default value if no arguments are passed
@@ -66,13 +131,45 @@ int main(int argc, char *argv[]){
         usage();
         return 1;
     }
+	if (!fexists(filename.c_str())){
+		cout<<"Error: The trace file "<<filename<<" does not exist! \n";
+		return 1;
+	}else{
+        ifstream infile(filename.c_str());
+        if(infile.peek() == EOF)
+        {
+        	cout<<"Error: The trace file is empty! Try Again \n";  	
+        	infile.close();
+            return 1;
+        }else{
+        	infile.close();
+        }
+        
+	} 
+   /*Sets the cache properties by setting global variables*/ 
+   calculateCacheValues(cacheSize,blockSize,ways);
 
-//Reading the trace file
-string address, instruct;
-ifstream infile(filename.c_str());
+   /*Initialize the blocks using the cache properties*/
+   cacheBlock **blocks = new cacheBlock* [numSets];
+   for(int i=0;i<numSets;i++)
+       blocks[i] = new cacheBlock[ways]; 
+   
+   /*Initilialize each block's cache line*/
+   for(int i=0;i<numSets;i++)
+   	  for(int j=0;j<ways;j++)
+   	  	  blocks[i][j].cacheLine = new string [blockSize];
+   
+   /*Read the trace file*/
 
-while(infile >> address >> instruct){
-    
-}
+	    /*
+	  string address, instruct;
+	  ifstream infile(filename.c_str());
+
+	  while(infile >> address >> instruct){
+	    
+	  }
+
+	  */
+
 
 }
