@@ -171,12 +171,12 @@ int main(int argc, char *argv[]){
 	  while(infile >> address >> instruct){
 	    splitAddress(address, tag, offset, index);
 	    for(int w=0;w<ways;w++){
-	        if(block[index][w] == tag){
+	        if(blocks[index][w].cachedBytes[0] == tag){
 	        	cout<<"hit";
 	        }
 	        else{	
 	        	cout<<"miss";
-	        	block[index][w] = tag;
+	        	blocks[index][w].cachedBytes[0] = tag;
             }
         }    
 	  }
