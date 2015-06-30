@@ -146,6 +146,8 @@ int main(int argc, char *argv[]){
   unsigned int blockSize;
   unsigned int ways = 1; // Default number of ways
   string filename;
+  int numMiss =0;
+  int numHit =0;
 
   while ((c = getopt (argc, argv, "s:b:w:f:")) != -1)
     switch (c)
@@ -244,10 +246,12 @@ int main(int argc, char *argv[]){
       for(int w=0;w<ways;w++){
           if(blocks[index][w].cachedBytes[0] == tag){
             status = "hit";
+            numHit++;
           }
           else{ 
             status = "miss";
             blocks[index][w].cachedBytes[0] = tag;
+            numMiss++;
           }
       }
 
@@ -256,6 +260,11 @@ int main(int argc, char *argv[]){
     infile.close();
     outfile.close();
   }
+
+  cout << "Total number of memory accesses: " << numMiss+numHit <<endl;
+  cout << "Total number of Hits: " << numHit <<endl;
+  cout << "Total number of Misses: " << numMiss <<endl;
+
       
     
 }
