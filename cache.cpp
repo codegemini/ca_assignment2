@@ -67,6 +67,50 @@ string hexToBinary(string hex){
   return bin;
 
 }
+string binaryToHex(string bin){
+  string hex;
+  int len = bin.length();
+  int rem;
+  if(rem = (len % 4) != 0){
+     switch(rem){
+     	case 1: bin += "000"; 
+     	break;
+     	case 2: bin += "00";
+     	break;
+     	case 3: bin += "0";
+     	break;
+     }  
+  }
+
+  for(int i=0;i<len;i+=4){
+
+     switch(atoi((bin.substr(i,4)).c_str())) {
+
+        case 0: hex += "0";  break;
+        case 1: hex += "1";  break;
+        case 10: hex += "2";  break; 
+        case 11: hex += "3";  break;
+        case 100: hex += "4";  break; 
+        case 101: hex += "5";  break;
+        case 110: hex += "6";  break;
+        case 111: hex += "7";  break;
+        case 1000: hex += "8";  break;
+        case 1001: hex += "9";  break;
+        case 1010: hex += "a";  break;
+        case 1011: hex += "b";  break;
+        case 1100: hex += "c";  break;
+        case 1101: hex += "d";  break;
+        case 1110: hex += "e";  break;
+        case 1111: hex += "f";  break;
+        default : return "Invalid Address"; 
+        
+      }
+  }
+  if (hex[0] == '0')
+  	 hex = "0000000"; 
+
+  return hex;
+}
 void splitAddress(string address, string *tag, int *offset, int *index ){
 
   string addressInBinary =  hexToBinary(address);
@@ -171,7 +215,7 @@ int main(int argc, char *argv[]){
   for(int i=0;i<numSets;i++){
       for(int j=0;j<ways;j++){
           blocks[i][j].cachedBytes = new string [1];//new string [blockSize];
-          blocks[i][j].cachedBytes[0] = "000000000";
+          blocks[i][j].cachedBytes[0] = "0000000";
         }
   }
    
@@ -189,6 +233,14 @@ int main(int argc, char *argv[]){
     
     while(infile >> address >> instruct){
       splitAddress(address, &tag, &offset, &index);
+
+      /*Output current state of cache*/
+      for(int i=0;i<numSets;i++){
+        for(int y=0;y<ways;y++){
+          outfile<<"[Set "<<i<<": {Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", C} LRU: 0] ";
+        }
+      }
+      
       for(int w=0;w<ways;w++){
           if(blocks[index][w].cachedBytes[0] == tag){
             status = "hit";
@@ -198,12 +250,7 @@ int main(int argc, char *argv[]){
             blocks[index][w].cachedBytes[0] = tag;
           }
       }
-    /*Output current state of cache*/
-      for(int i=0;i<numSets;i++){
-        for(int y=0;y<ways;y++){
-          outfile<<"[Set "<<i<<": {Way "<<y<<":"<<blocks[i][y].cachedBytes[0]<<", C} LRU: 0] ";
-        }
-      }
+
     outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n"; //Not handling dirty/clean right now 
     }
     infile.close();
