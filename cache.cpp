@@ -166,10 +166,11 @@ int main(int argc, char *argv[]){
 	    
 	  string address, instruct;
 	  ifstream infile(filename.c_str());
+      ofstream outfile("results.txt");
 
 	  while(infile >> address >> instruct){
 	    splitAddress(address, tag, offset, index);
-	    for(int w=0;w<ways;w++)
+	    for(int w=0;w<ways;w++){
 	        if(block[index][w] == tag){
 	        	cout<<"hit";
 	        }
@@ -177,6 +178,7 @@ int main(int argc, char *argv[]){
 	        	cout<<"miss";
 	        	block[index][w] = tag;
             }
+        }    
 	  }
       
 	  
