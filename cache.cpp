@@ -67,6 +67,7 @@ string hexToBinary(string hex){
 
 void splitAddress(string address, string &tag, int &offset, int &index ){
 
+  
 
 
 }
@@ -120,25 +121,16 @@ int main(int argc, char *argv[]){
         usage();
         return 1;
     }
-
-    cout << hexToBinary("bfedd7a4") << endl;
-
-
-   // calculateCacheValues(cacheSize,blockSize,ways);
-
-
+    calculateCacheValues(cacheSize,blockSize,ways);
 
 //Reading the trace file
 
-    /*
+ 
   string address, instruct;
   ifstream infile(filename.c_str());
 
   while(infile >> address >> instruct){
     
   }
-
-  */
-
 
 }
