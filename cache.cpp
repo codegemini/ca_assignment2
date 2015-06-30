@@ -175,9 +175,10 @@ int main(int argc, char *argv[]){
 	        }
 	        else{	
 	        	cout<<"miss";
+	        	block[index][w] = tag;
             }
 	  }
-
+      
 	  
 
 
