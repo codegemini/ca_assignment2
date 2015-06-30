@@ -157,19 +157,28 @@ int main(int argc, char *argv[]){
    /*Initilialize each block's cache bytes*/
    for(int i=0;i<numSets;i++)
    	  for(int j=0;j<ways;j++)
-   	  	  blocks[i][j].cachedBytes = new string [blockSize];
+   	  	  blocks[i][j].cachedBytes = new string [1];//new string [blockSize];
    
    /*Read the trace file*/
-
-	    /*
+      string tag;
+      int offset;
+      int index;
+	    
 	  string address, instruct;
 	  ifstream infile(filename.c_str());
 
 	  while(infile >> address >> instruct){
-	    
+	    splitAddress(address, tag, offset, index);
+	    for(int w=0;w<ways;w++)
+	        if(block[index][w] == tag){
+	        	cout<<"hit";
+	        }
+	        else{	
+	        	cout<<"miss";
+            }
 	  }
 
-	  */
+	  
 
 
 }
