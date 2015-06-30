@@ -35,7 +35,7 @@ void calculateCacheValues(int s, int b, int w){
     numIndexBits = log2(numSets);
     numOffsetBits = log2(b);
     numTagBits = ADDRESS_SIZE - (numIndexBits + numOffsetBits);
-
+    
 }
 
 string hexToBinary(string hex){
@@ -67,10 +67,18 @@ string hexToBinary(string hex){
   return bin;
 
 }
-void splitAddress(string address, string &tag, int &offset, int &index ){
+void splitAddress(string address, string *tag, int *offset, int *index ){
 
-  
+  string addressInBinary =  hexToBinary(address);
 
+  *tag = addressInBinary.substr(0,numTagBits);
+
+  string s_index = addressInBinary.substr(numTagBits,numIndexBits);
+  char *ptr;
+  *index = (int) strtol(s_index.c_str(), &ptr,2);
+
+  string s_offset = addressInBinary.substr(numTagBits+numIndexBits, numOffsetBits);
+  *offset = (int) strtol(s_offset.c_str(), &ptr,2);
 
 }
 /* Helper Fucntions */
@@ -133,17 +141,15 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
-    calculateCacheValues(cacheSize,blockSize,ways);
-
 //Reading the trace file
 
  
-  string address, instruct;
-  ifstream infile(filename.c_str());
+  // string address, instruct;
+  // ifstream infile(filename.c_str());
 
-  while(infile >> address >> instruct){
+  // while(infile >> address >> instruct){
     
-  }
+  // }
 
 	if (!fexists(filename.c_str())){
 		cout<<"Error: The trace file "<<filename<<" does not exist! \n";
@@ -163,27 +169,45 @@ int main(int argc, char *argv[]){
    /*Sets the cache properties by setting global variables*/ 
    calculateCacheValues(cacheSize,blockSize,ways);
 
-   /*Initialize the blocks using the cache properties*/
-   cacheBlock **blocks = new cacheBlock* [numSets];
-   for(int i=0;i<numSets;i++)
-       blocks[i] = new cacheBlock[ways]; 
+
+    /*Initialize the blocks using the cache properties*/
+    cacheBlock **blocks = new cacheBlock* [numSets];
+    for(int i=0;i<numSets;i++)
+        blocks[i] = new cacheBlock[ways]; 
    
-   /*Initilialize each block's cache bytes*/
-   for(int i=0;i<numSets;i++)
-   	  for(int j=0;j<ways;j++)
-   	  	  blocks[i][j].cachedBytes = new string [blockSize];
+    /*Initilialize each block's cache bytes*/
+    for(int i=0;i<numSets;i++)
+    	  for(int j=0;j<ways;j++)
+    	  	  blocks[i][j].cachedBytes = new string [1];//new string [blockSize];
    
+
+
    /*Read the trace file*/
+      string tag;
+      int offset;
+      int index;
 
-	    /*
-	  string address, instruct;
-	  ifstream infile(filename.c_str());
+       
 
-	  while(infile >> address >> instruct){
 	    
-	  }
+	   string address, instruct;
+	   ifstream infile(filename.c_str());
+       ofstream outfile("results.txt");
 
-	  */
+	   while(infile >> address >> instruct){
+	     splitAddress(address, &tag, &offset, &index);
+	     for(int w=0;w<ways;w++){
+	         if(blocks[index][w].cachedBytes[0] == tag){
+	         	cout<<"hit";
+	         }
+	         else{	
+	         	cout<<"miss";
+	         	blocks[index][w].cachedBytes[0] = tag;
+             }
+         }    
+	   }
+      
+	  
 
 
 
