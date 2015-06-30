@@ -146,42 +146,53 @@ int main(int argc, char *argv[]){
         }
         
 	} 
-   /*Sets the cache properties by setting global variables*/ 
-   calculateCacheValues(cacheSize,blockSize,ways);
+	/*Sets the cache properties by setting global variables*/ 
+	calculateCacheValues(cacheSize,blockSize,ways);
 
-   /*Initialize the blocks using the cache properties*/
-   cacheBlock **blocks = new cacheBlock* [numSets];
-   for(int i=0;i<numSets;i++)
-       blocks[i] = new cacheBlock[ways]; 
-   
-   /*Initilialize each block's cache bytes*/
-   for(int i=0;i<numSets;i++)
-   	  for(int j=0;j<ways;j++)
-   	  	  blocks[i][j].cachedBytes = new string [1];//new string [blockSize];
+	/*Initialize the blocks using the cache properties*/
+	cacheBlock **blocks = new cacheBlock* [numSets];
+	for(int i=0;i<numSets;i++)
+	   blocks[i] = new cacheBlock[ways]; 
+
+	/*Initilialize each block's cache bytes*/
+	for(int i=0;i<numSets;i++)
+		  for(int j=0;j<ways;j++)
+		  	  blocks[i][j].cachedBytes = new string [1];//new string [blockSize];
    
    /*Read the trace file*/
-      string tag;
-      int offset;
-      int index;
-	    
-	  string address, instruct;
-	  ifstream infile(filename.c_str());
-      ofstream outfile("results.txt");
+	string tag;
+	int offset;
+	int index;
+	string status;
 
+	string address, instruct;
+	ifstream infile(filename.c_str());
+	ofstream outfile("results.txt");
+	      
+	if(outfile.is_open()){ 
+	  
 	  while(infile >> address >> instruct){
 	    splitAddress(address, tag, offset, index);
 	    for(int w=0;w<ways;w++){
 	        if(blocks[index][w].cachedBytes[0] == tag){
-	        	cout<<"hit";
+	        	status = "hit";
 	        }
 	        else{	
-	        	cout<<"miss";
+	        	status = "miss";
 	        	blocks[index][w].cachedBytes[0] = tag;
-            }
-        }    
+	        }
+	    }
+	  /*Output current state of cache*/
+      for(int i=0;i<numSets;i++){
+      	for(int y=0;y<ways;y++){
+      		outfile<<"[Set "<<i<<": {Way "<<y<<":"<<blocks[i][y].cachedBytes[0]<<", C} LRU: 0] ";
+      	}
+      }
+	  outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n"; //Not handling dirty/clean right now 
 	  }
+	  infile.close();
+	  outfile.close();
+	}
       
 	  
-
-
 }
