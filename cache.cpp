@@ -17,7 +17,6 @@ int numIndexBits = 0;
 int numOffsetBits = 0;
 int numTagBits =0;
 
-
 /* Usage */ 
 void usage(void){
    printf("Usage:\n");
@@ -25,6 +24,11 @@ void usage(void){
    printf(" -b <size of the block in Bytes>\n");
    printf(" -f <trace file - containing memory accesses i.e. Loads and Stores>\n");
 }
+
+/* Block Structure */
+typedef struct _str_block {
+   string *cachedBytes;  
+} cacheBlock;
 
 void calculateCacheValues(int s, int b, int w){
     numSets= s/(b*w);
@@ -63,16 +67,24 @@ string hexToBinary(string hex){
   return bin;
 
 }
-
-
 void splitAddress(string address, string &tag, int &offset, int &index ){
 
   
 
 
 }
-
-
+/* Helper Fucntions */
+bool fexists(const char *filename)
+{
+  ifstream ifile(filename);
+  if(ifile){
+  	ifile.close();
+    return true; 
+  }else{
+  	ifile.close();
+  	return false;
+  }
+}
 
 
 int main(int argc, char *argv[]){
@@ -82,7 +94,6 @@ int main(int argc, char *argv[]){
   unsigned int blockSize;
   unsigned int ways = 1; // Default number of ways
   string filename;
-
 
   while ((c = getopt (argc, argv, "s:b:w:f:")) != -1)
     switch (c)
@@ -121,6 +132,7 @@ int main(int argc, char *argv[]){
         usage();
         return 1;
     }
+
     calculateCacheValues(cacheSize,blockSize,ways);
 
 //Reading the trace file
@@ -132,5 +144,47 @@ int main(int argc, char *argv[]){
   while(infile >> address >> instruct){
     
   }
+
+	if (!fexists(filename.c_str())){
+		cout<<"Error: The trace file "<<filename<<" does not exist! \n";
+		return 1;
+	}else{
+        ifstream infile(filename.c_str());
+        if(infile.peek() == EOF)
+        {
+        	cout<<"Error: The trace file is empty! Try Again \n";  	
+        	infile.close();
+            return 1;
+        }else{
+        	infile.close();
+        }
+        
+	} 
+   /*Sets the cache properties by setting global variables*/ 
+   calculateCacheValues(cacheSize,blockSize,ways);
+
+   /*Initialize the blocks using the cache properties*/
+   cacheBlock **blocks = new cacheBlock* [numSets];
+   for(int i=0;i<numSets;i++)
+       blocks[i] = new cacheBlock[ways]; 
+   
+   /*Initilialize each block's cache bytes*/
+   for(int i=0;i<numSets;i++)
+   	  for(int j=0;j<ways;j++)
+   	  	  blocks[i][j].cachedBytes = new string [blockSize];
+   
+   /*Read the trace file*/
+
+	    /*
+	  string address, instruct;
+	  ifstream infile(filename.c_str());
+
+	  while(infile >> address >> instruct){
+	    
+	  }
+
+	  */
+
+
 
 }
