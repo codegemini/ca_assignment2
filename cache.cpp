@@ -216,8 +216,9 @@ int main(int argc, char *argv[]){
   /*Initilialize each block's cache bytes*/
   for(int i=0;i<numSets;i++){
       for(int j=0;j<ways;j++){
-          blocks[i][j].cachedBytes = new string [1];//new string [blockSize];
+          blocks[i][j].cachedBytes = new string [2];//new string [blockSize];
           blocks[i][j].cachedBytes[0] = "0000000";
+          blocks[i][j].cachedBytes[1] = "C";
         }
   }
    
@@ -239,7 +240,7 @@ int main(int argc, char *argv[]){
       /*Output current state of cache*/
       for(int i=0;i<numSets;i++){
         for(int y=0;y<ways;y++){
-          outfile<<"[Set "<<i<<": {Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", C} LRU: 0] ";
+          outfile<<"[Set "<<i<<": {Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", "<<blocks[i][y].cachedBytes[1] <<"} LRU: 0] ";
         }
       }
       
@@ -247,11 +248,21 @@ int main(int argc, char *argv[]){
           if(blocks[index][w].cachedBytes[0] == tag){
             status = "hit";
             numHit++;
+            if(strcmp(instruct.c_str(),"S")==0){
+                blocks[index][w].cachedBytes[1] = "D";
+            }
+          
           }
           else{ 
             status = "miss";
             blocks[index][w].cachedBytes[0] = tag;
             numMiss++;
+            if(strcmp(instruct.c_str(),"L")==0){
+                blocks[index][w].cachedBytes[1] = "C";
+            }
+            else{
+                blocks[index][w].cachedBytes[1] = "D";  // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
+            }
           }
       }
 
