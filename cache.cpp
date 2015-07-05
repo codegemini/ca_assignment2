@@ -245,11 +245,15 @@ int main(int argc, char *argv[]){
       splitAddress(address, &tag, &offset, &index);
 
       /*Output current state of cache*/
+
+      /*
       for(int i=0;i<numSets;i++){
         for(int y=0;y<ways;y++){
           outfile<<"[Set "<<i<<": {Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", "<<blocks[i][y].cachedBytes[1] <<"} LRU: 0] ";
         }
       }
+
+      */
       
       for(int w=0;w<ways;w++){
           if(blocks[index][w].cachedBytes[0] == tag){
@@ -273,7 +277,7 @@ int main(int argc, char *argv[]){
           }
       }
 
-    outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n"; //Not handling dirty/clean right now 
+   // outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n"; //Not handling dirty/clean right now 
     }
     infile.close();
     outfile.close();
