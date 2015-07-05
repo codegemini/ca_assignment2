@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include <ostream>
+#include <cstring>
 
 using namespace std;
 
@@ -73,17 +74,19 @@ string binaryToHex(string bin){
   int rem;
   if(rem = (len % 4) != 0){
      switch(rem){
-     	case 1: bin += "000"; 
-     	break;
-     	case 2: bin += "00";
-     	break;
-     	case 3: bin += "0";
-     	break;
+      case 1: bin = "000" + bin; 
+              len += 3;
+      break;
+      case 2: bin = "00" + bin;
+              len += 2; 
+      break;
+      case 3: bin = "0" + bin;
+              len += 1;
+      break;
      }  
   }
 
-  for(int i=0;i<len;i+=4){
-
+  for(int i=len-4;i>=0;i-=4){
      switch(atoi((bin.substr(i,4)).c_str())) {
 
         case 0: hex += "0";  break;
@@ -107,8 +110,12 @@ string binaryToHex(string bin){
       }
   }
   if (hex[0] == '0')
-  	 hex = "0000000"; 
-
+     hex = "0000000"; 
+  string temp;
+  for(int i=hex.length()-1;i>=0;i--){
+     temp += hex[i];
+  }
+  hex = temp;
   return hex;
 }
 void splitAddress(string address, string *tag, int *offset, int *index ){

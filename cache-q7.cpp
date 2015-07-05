@@ -74,15 +74,15 @@ string binaryToHex(string bin){
   int rem;
   if(rem = (len % 4) != 0){
      switch(rem){
-     	case 1: bin = "000" + bin; 
+      case 1: bin = "000" + bin; 
               len += 3;
-     	break;
-     	case 2: bin = "00" + bin;
+      break;
+      case 2: bin = "00" + bin;
               len += 2; 
-     	break;
-     	case 3: bin = "0" + bin;
+      break;
+      case 3: bin = "0" + bin;
               len += 1;
-     	break;
+      break;
      }  
   }
 
@@ -110,7 +110,7 @@ string binaryToHex(string bin){
       }
   }
   if (hex[0] == '0')
-  	 hex = "0000000"; 
+     hex = "0000000"; 
   string temp;
   for(int i=hex.length()-1;i>=0;i--){
      temp += hex[i];
@@ -214,9 +214,10 @@ int main(int argc, char *argv[]){
      /*Sets the cache properties by setting global variables*/ 
   calculateCacheValues(cacheSize,blockSize,ways);
 
-
   /*Initialize the blocks using the cache properties*/
   cacheBlock **blocks = new cacheBlock* [numSets];
+  
+
   for(int i=0;i<numSets;i++)
      blocks[i] = new cacheBlock[ways]; 
 
@@ -224,17 +225,24 @@ int main(int argc, char *argv[]){
   for(int i=0;i<numSets;i++){
       for(int j=0;j<ways;j++){
           blocks[i][j].cachedBytes = new string [2];//new string [blockSize];
-          blocks[i][j].cachedBytes[0] = "0000000";
+          blocks[i][j].cachedBytes[0] = "0000000";// change this 
           blocks[i][j].cachedBytes[1] = "C";
         }
   }
+
+
+  /*Initialize a LRU tracking array*/
+  unsigned int *LRU = new unsigned int[numSets]; 
    
    /*Read the trace file*/
   string tag;
   int offset;
   int index;
   string status;
-
+  int numStores=0; 
+  int numDirtyToClean = 0;
+  int missedWays=0;
+  int padding; 
   string address, instruct;
   ifstream infile(filename.c_str());
   ofstream outfile("results.txt");
@@ -242,47 +250,97 @@ int main(int argc, char *argv[]){
   if(outfile.is_open()){ 
     
     while(infile >> address >> instruct){
-      splitAddress(address, &tag, &offset, &index);
-
-      /*Output current state of cache*/
-      for(int i=0;i<numSets;i++){
-        for(int y=0;y<ways;y++){
-          outfile<<"[Set "<<i<<": {Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", "<<blocks[i][y].cachedBytes[1] <<"} LRU: 0] ";
-        }
+      if(address.length() < 8){
+          padding = 8 - address.length();
+          for(int i=0;i<padding;i++)
+            address = "0" + address;
       }
+      splitAddress(address, &tag, &offset, &index);
+      
+      /*Output current state of cache*/
+
+      
+      // for(int i=0;i<numSets;i++){
+      //   outfile<<"[Set "<<i<<": ";
+      //   for(int y=0;y<ways;y++){
+      //     outfile<<"{Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", "<<blocks[i][y].cachedBytes[1] <<"}";
+      //   }
+      //   outfile<<" LRU: "<<LRU[i]<<"]"; 
+      // }
+
+      missedWays=0;
       
       for(int w=0;w<ways;w++){
           if(blocks[index][w].cachedBytes[0] == tag){
+
             status = "hit";
             numHit++;
             if(strcmp(instruct.c_str(),"S")==0){
                 blocks[index][w].cachedBytes[1] = "D";
+                numStores++;
             }
-          
+            break;
           }
           else{ 
-            status = "miss";
-            blocks[index][w].cachedBytes[0] = tag;
-            numMiss++;
-            if(strcmp(instruct.c_str(),"L")==0){
-                blocks[index][w].cachedBytes[1] = "C";
-            }
-            else{
-                blocks[index][w].cachedBytes[1] = "D";  // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
-            }
+            missedWays += 1;
           }
       }
 
-    outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n"; //Not handling dirty/clean right now 
+
+      if (missedWays == ways){
+            status = "miss";
+            if(LRU[index] == 0){
+                  blocks[index][0].cachedBytes[0] = tag;
+                  LRU[index] = 1;
+                  numMiss++;
+                  //check current value of dirty bit to see if the block being evicted needs to be written back
+                  if(strcmp(blocks[index][0].cachedBytes[1].c_str(),"D")==0){
+                      // if yes, update dirty-to-clean counter
+                      numDirtyToClean++;
+                  }
+
+                  if(strcmp(instruct.c_str(),"L")==0){
+                      blocks[index][0].cachedBytes[1] = "C";
+                  }
+                  else{
+                      blocks[index][0].cachedBytes[1] = "D"; // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
+                      numStores++; 
+                  }
+            }
+            else{
+                  blocks[index][1].cachedBytes[0] = tag; 
+                  LRU[index] = 0;
+                  numMiss++;
+                  //check current value of dirty bit to see if the block being evicted needs to be written back
+                  if(strcmp(blocks[index][1].cachedBytes[1].c_str(),"D")==0){
+                      // if yes, update dirty-to-clean counter
+                      numDirtyToClean++;
+                  }
+                  if(strcmp(instruct.c_str(),"L")==0){
+                      blocks[index][1].cachedBytes[1] = "C";
+                  }
+                  else{
+                      blocks[index][1].cachedBytes[1] = "D"; // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
+                      numStores++; 
+                  }
+            }
+      }
+
+
+
+    // outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n"; //Not handling dirty/clean right now 
     }
+
     infile.close();
+
     outfile.close();
+
   }
 
   cout << "Total number of memory accesses: " << numMiss+numHit <<endl;
   cout << "Total number of Hits: " << numHit <<endl;
   cout << "Total number of Misses: " << numMiss <<endl;
-
-      
+  cout << "Total number of Stores: " << numStores <<endl;
+  cout << "Total number of Dirty Evictions: " << numDirtyToClean <<endl;    
     
 }

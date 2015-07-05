@@ -1,0 +1,92 @@
+Nivedan@d207-023-163-218:~/CA_Assignment2$ ./q8.sh 32768 2 memory-trace-gcc.trace
+Total number of memory accesses: 49642128
+Total number of Hits: 39706694
+Total number of Misses: 9935434
+Total number of Stores: 0
+Total number of Dirty Evictions: 5713735
+Total number of memory accesses: 49642128
+Total number of Hits: 44401432
+Total number of Misses: 5240696
+Total number of Stores: 0
+Total number of Dirty Evictions: 2952328
+Total number of memory accesses: 49642128
+Total number of Hits: 46806123
+Total number of Misses: 2836005
+Total number of Stores: 0
+Total number of Dirty Evictions: 1551938
+Total number of memory accesses: 49642128
+Total number of Hits: 48051653
+Total number of Misses: 1590475
+Total number of Stores: 0
+Total number of Dirty Evictions: 833638
+Total number of memory accesses: 49642128
+Total number of Hits: 48675572
+Total number of Misses: 966556
+Total number of Stores: 0
+Total number of Dirty Evictions: 469885
+Total number of memory accesses: 49642128
+Total number of Hits: 48969562
+Total number of Misses: 672566
+Total number of Stores: 0
+Total number of Dirty Evictions: 292544
+Total number of memory accesses: 49642128
+Total number of Hits: 49071087
+Total number of Misses: 571041
+Total number of Stores: 0
+Total number of Dirty Evictions: 221558
+Total number of memory accesses: 49642128
+Total number of Hits: 48972332
+Total number of Misses: 669796
+Total number of Stores: 0
+Total number of Dirty Evictions: 247292
+Total number of memory accesses: 49642128
+Total number of Hits: 48679020
+Total number of Misses: 963108
+Total number of Stores: 0
+Total number of Dirty Evictions: 327111
+Nivedan@d207-023-163-218:~/CA_Assignment2$ ./q8.sh 8192 2 memory-trace-gcc.trace
+Total number of memory accesses: 49642128
+Total number of Hits: 28090820
+Total number of Misses: 21551308
+Total number of Stores: 0
+Total number of Dirty Evictions: 12087782
+Total number of memory accesses: 49642128
+Total number of Hits: 38436527
+Total number of Misses: 11205601
+Total number of Stores: 0
+Total number of Dirty Evictions: 6151843
+Total number of memory accesses: 49642128
+Total number of Hits: 43613016
+Total number of Misses: 6029112
+Total number of Stores: 0
+Total number of Dirty Evictions: 3186613
+Total number of memory accesses: 49642128
+Total number of Hits: 46186104
+Total number of Misses: 3456024
+Total number of Stores: 0
+Total number of Dirty Evictions: 1718195
+Total number of memory accesses: 49642128
+Total number of Hits: 47407327
+Total number of Misses: 2234801
+Total number of Stores: 0
+Total number of Dirty Evictions: 1013942
+Total number of memory accesses: 49642128
+Total number of Hits: 47825038
+Total number of Misses: 1817090
+Total number of Stores: 0
+Total number of Dirty Evictions: 745650
+Total number of memory accesses: 49642128
+Total number of Hits: 47908952
+Total number of Misses: 1733176
+Total number of Stores: 0
+Total number of Dirty Evictions: 654014
+Total number of memory accesses: 49642128
+Total number of Hits: 47493475
+Total number of Misses: 2148653
+Total number of Stores: 0
+Total number of Dirty Evictions: 771170
+Total number of memory accesses: 49642128
+Total number of Hits: 46637378
+Total number of Misses: 3004750
+Total number of Stores: 0
+Total number of Dirty Evictions: 1003517
