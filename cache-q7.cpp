@@ -270,8 +270,11 @@ int main(int argc, char *argv[]){
       //   outfile<<" LRU: "<<LRU[i]<<"]"; 
       // }
 
-      missedWays=0;
+     
+    if(ways > 1){
       
+      missedWays=0;
+
       for(int w=0;w<ways;w++){
           if(blocks[index][w].cachedBytes[0] == tag){
 
@@ -327,6 +330,37 @@ int main(int argc, char *argv[]){
                   }
             }
       }
+    }else if(ways == 1){
+
+         for(int w=0;w<ways;w++){
+          if(blocks[index][w].cachedBytes[0] == tag){
+            status = "hit";
+            numHit++;
+            if(strcmp(instruct.c_str(),"S")==0){
+                blocks[index][w].cachedBytes[1] = "D";
+                numStores++;
+            }
+          }
+          else{ 
+            status = "miss";
+            blocks[index][w].cachedBytes[0] = tag;
+            numMiss++;
+            //check current value of dirty bit to see if the block being evicted needs to be written back
+            if(strcmp(blocks[index][w].cachedBytes[1].c_str(),"D")==0){
+              // if yes, update dirty-to-clean counter
+              numDirtyToClean++;
+            }
+            if(strcmp(instruct.c_str(),"L")==0){
+                blocks[index][w].cachedBytes[1] = "C";
+            }
+            else{
+                blocks[index][w].cachedBytes[1] = "D"; // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
+                numStores++; 
+            }
+          }
+        }
+    }
+
 
 
 
