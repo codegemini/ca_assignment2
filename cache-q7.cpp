@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <cstdio>
 #include <unistd.h>
@@ -137,17 +138,17 @@ bool fexists(const char *filename)
 {
   ifstream ifile(filename);
   if(ifile){
-  	ifile.close();
+    ifile.close();
     return true; 
   }else{
-  	ifile.close();
-  	return false;
+    ifile.close();
+    return false;
   }
 }
 
 
 int main(int argc, char *argv[]){
-  int c = -2;	// Default value if no arguments are passed
+  int c = -2; // Default value if no arguments are passed
   opterr = 0;
   unsigned int cacheSize;
   unsigned int blockSize;
@@ -195,21 +196,21 @@ int main(int argc, char *argv[]){
     }
 
 
-	if (!fexists(filename.c_str())){
-		cout<<"Error: The trace file "<<filename<<" does not exist! \n";
-		return 1;
-	}else{
+  if (!fexists(filename.c_str())){
+    cout<<"Error: The trace file "<<filename<<" does not exist! \n";
+    return 1;
+  }else{
         ifstream infile(filename.c_str());
         if(infile.peek() == EOF)
         {
-        	cout<<"Error: The trace file is empty! Try Again \n";  	
-        	infile.close();
+          cout<<"Error: The trace file is empty! Try Again \n";   
+          infile.close();
             return 1;
         }else{
-        	infile.close();
+          infile.close();
         }
         
-	} 
+  } 
 
      /*Sets the cache properties by setting global variables*/ 
   calculateCacheValues(cacheSize,blockSize,ways);
@@ -233,6 +234,7 @@ int main(int argc, char *argv[]){
 
   /*Initialize a LRU tracking array*/
   unsigned int *LRU = new unsigned int[numSets]; 
+  
    
    /*Read the trace file*/
   string tag;
