@@ -336,7 +336,7 @@ int main(int argc, char *argv[]){
             numHit++;
             if(strcmp(instruct.c_str(),"S")==0){
                 blocks[index][w].cachedBytes[1] = "D";
-               // numStores++;
+                numStores++;
             }
           }
           else{ 
@@ -353,7 +353,7 @@ int main(int argc, char *argv[]){
             }
             else{
                 blocks[index][w].cachedBytes[1] = "D"; // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
-                //numStores++; 
+                numStores++; 
             }
           }
         }
