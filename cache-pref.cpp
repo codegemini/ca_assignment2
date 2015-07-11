@@ -194,7 +194,8 @@ void HitOrMiss(string address, string instruct){
 
   splitAddress(address, &tag, &offset, &index);
    
-
+if(ways>1){
+  missedWays = 0;
   for(int w=0;w<ways;w++){
 
           if(blocks[index][w].cachedBytes[0] == tag){
@@ -304,7 +305,6 @@ void HitOrMiss(string address, string instruct){
                   string currentAddress = address;
                   string prefAddress;
                  for(int i=0; i<prefetchNum ; i++){
-                    cout << "here" << endl;
                     prefAddress = findNextAddress(currentAddress);
                     HitOrMiss(prefAddress, "P" );
                     currentAddress = prefAddress;
@@ -313,7 +313,89 @@ void HitOrMiss(string address, string instruct){
 
             }
 
-   }         
+   }
+   }
+
+   else if(ways == 1){
+
+         
+          if(blocks[index][0].cachedBytes[0] == tag){
+            
+                  if(strcmp(instruct.c_str(),"S")==0){
+                      blocks[index][0].cachedBytes[1] = "D";
+                      
+                  }status = "hit";
+                  if(strcmp(instruct.c_str(),"P")==0){
+                    numPrefHit++;
+                  }
+                  else{
+                    numHit++;
+                  }
+                  
+                 //  /*Output current state of cache*/
+                 // for(int i=0;i<numSets;i++){
+                 //   outfile<<"[Set "<<i<<": ";
+                 //   for(int y=0;y<ways;y++){
+                 //     outfile<<"{Way "<<y<<":"<<binaryToHex(blocks[i][y].cachedBytes[0])<<", "<<blocks[i][y].cachedBytes[1] <<"}";
+                 //   }
+                 //   outfile<<" LRU: "<<LRU[i]<<"]"; 
+                 // }
+
+                 //  outfile<< " | "<< address << "\t" << instruct << "\t" << status << "\n";
+
+                  if(strcmp(instruct.c_str(),"S")==0){
+                      blocks[index][0].cachedBytes[1] = "D";
+                      
+                  }
+          }
+          else{ 
+
+
+                      status = "miss";
+                      if(strcmp(instruct.c_str(),"P")==0){
+                        numPrefMiss++;
+                      }
+                      else{
+                        numMiss++;
+                      }
+
+                      blocks[index][0].cachedBytes[0] = tag; 
+
+                      
+                      //check current value of dirty bit to see if the block being evicted needs to be written back
+                      if(strcmp(blocks[index][0].cachedBytes[1].c_str(),"D")==0){
+                          // if yes, update dirty-to-clean counter
+                         numDirtyToClean++;
+                      }
+                       if(strcmp(instruct.c_str(),"S")==0){
+                          blocks[index][0].cachedBytes[1] = "D";
+
+                      }
+                      else{
+                          blocks[index][0].cachedBytes[1] = "C"; // assuming we are making a write-allocate cache, since we are already bringing the missed data to cache
+                         
+                      }
+
+
+                                // prefetching
+                      if(strcmp(instruct.c_str(),"P")!=0){
+                            string currentAddress = address;
+                            string prefAddress;
+                           for(int i=0; i<prefetchNum ; i++){
+                              prefAddress = findNextAddress(currentAddress);
+                              HitOrMiss(prefAddress, "P" );
+                              currentAddress = prefAddress;
+
+                           }
+
+                      }
+
+
+          }
+        }
+    
+
+
 }
 
 
