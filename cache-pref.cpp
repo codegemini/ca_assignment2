@@ -183,8 +183,8 @@ void HitOrMiss(string address, string instruct){
   int missedWays = 0;
   string status;
   string tag;
-  int offset;
-  int index;
+  int offset=0;
+  int index=0;
   int padding = 0;
   if(address.length() < 8){
           padding = 8 - address.length();
@@ -198,7 +198,7 @@ void HitOrMiss(string address, string instruct){
   for(int w=0;w<ways;w++){
 
           if(blocks[index][w].cachedBytes[0] == tag){
-          //  cout << "here1"<< endl;   
+          
             status = "hit";
             if(strcmp(instruct.c_str(),"P")==0){
               numPrefHit++;
@@ -257,7 +257,7 @@ void HitOrMiss(string address, string instruct){
 
                   // set LRU bit according to instruction : P or not P
                   if(strcmp(instruct.c_str(),"P")!=0){
-                 //   cout << "LRU set1" << endl;
+                
                     LRU[index] = 1;
                   }
                  
@@ -279,8 +279,8 @@ void HitOrMiss(string address, string instruct){
             else{
                   blocks[index][1].cachedBytes[0] = tag; 
 
-                  if(strcmp(instruct.c_str(),"P")==0){
-                 //   cout << "LRU set2" << endl;
+                  if(strcmp(instruct.c_str(),"P")!=0){
+                
                     LRU[index] = 0;
                   }
 
@@ -304,6 +304,7 @@ void HitOrMiss(string address, string instruct){
                   string currentAddress = address;
                   string prefAddress;
                  for(int i=0; i<prefetchNum ; i++){
+                    cout << "here" << endl;
                     prefAddress = findNextAddress(currentAddress);
                     HitOrMiss(prefAddress, "P" );
                     currentAddress = prefAddress;
@@ -404,13 +405,7 @@ int main(int argc, char *argv[]){
 
   /*Initialize a LRU tracking array*/
    LRU = new unsigned int[numSets]; 
-   //LRU[numSets] = {0};
-  
-
-   // LRU[0] = 0;
-   // LRU[1] = 0;
-   // LRU[2] = 0;
-   // LRU[3] = 0;
+   
 
    
    /*Read the trace file*/
